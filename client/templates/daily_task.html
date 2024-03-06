@@ -1,0 +1,83 @@
+{% extends "_base.html" %}
+{% block content %}
+
+<body class="bg-slate-800 w-max">
+    <div class="flex flex-rows ">
+        <div class=" w-2/5 m-2 mt-4">
+            <div class=" mt-3 content-start">
+                <h1 class="text-3xl text-center font-bold text-teal-300 ">User Task Form</h1>
+                <form method="post" class="max-w-md mx-auto">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="title" class="block text-sm font-medium text-teal-300">Title:</label>
+                        <input type="text" id="title" name="title" value="{{instance.title}}"
+                            class="mt-1 p-2 bg-zinc-700 border rounded-md w-full" required>
+                    </div>
+
+
+                    <div class="mb-4">
+                        <label for="description" class="block text-sm font-medium text-teal-300">Description:</label>
+                        <textarea id="description" name="description" value="" rows="4"
+                            class="mt-1 p-2 bg-zinc-700  border rounded-md w-full"
+                            required>{{instance.description}}</textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="date" class="block text-sm font-medium text-teal-300">Date:</label>
+                        <input type="date" id="date" name="date" value="{{instance.date|date:'Y-m-d'}}"
+                            class="mt-1 p-2 border bg-zinc-700 rounded-md w-full" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="status" class="block text-sm font-medium text-teal-300">Status:</label>
+                        <select id="status" name="status" value="{{instance.status}}"
+                            class="mt-1 p-2 border bg-zinc-700  rounded-md w-full" required>
+                            <option value="none" selected disabled hidden>Select an Option</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="mb-1 text-center">
+                        <button type="submit"
+                            class="bg-teal-900 text-center hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+                    </div>
+                    <div class="mb-4 mt-2 text-center">
+                        {% if form.errors %}
+                        <ul>
+                            {% for field in form %}
+                            {% for error in field.errors %}
+                            <li><strong>{{ field.label }}</strong>: {{ error }}</li>
+                            {% endfor %}
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class=" w-3/5 border rounded-none  border-green-50 m-2 mt-4 mr-5">
+
+            <h2 class=" text-2xl font-bold mb-2 m-3 mr-4 text-center text-teal-300">Latest User Tasks</h2>
+            <div class="flex flex-rows justify-start ml-3">
+                {% for task in data %}
+                <div class="bg-white p-4 rounded-lg  bg-zinc-700 ml-2  w-2/7 mr-2">
+
+                    <h3 class="text-lg font-semibold mb-1">{{ task.title|slice:"0:10" }}</h3>
+                    <p class="text-slate-200 mb-2">{{ task.description|slice:"0:18"}}</p>
+                    <p class="text-sm text-gray-500">Date : {{ task.date }}</p>
+                    <p class="text-sm text-gray-500">Status : {{ task.status }}</p>
+                    <div class="flex flex-rows gap-2 mt-1 justify-end">{% load static %}
+                        <a href="{% url 'update' task.id %}"><img class="h-6  cursor-pointer "
+                                src="{% static 'client/edit.png' %}" alt="..."></a>
+                        <a href="{% url 'delete' task.id %}"><img class="h-6  cursor-pointer "
+                                src="{% static 'client/delete.png' %}" alt="..."></a>
+
+                    </div>
+                </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+
+</body>
+
+{% endblock %}

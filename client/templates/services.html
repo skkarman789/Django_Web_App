@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+{% block content %}
+
+<div class="text-center mt-10 mb-2">
+    <h1>Welcome, you are logged in!!!!</h1>
+    {%if user.is_authenticated %}
+        hello,<b> {{user.first_name}} {{user.last_name}}</b>
+        <br>
+        you are on <b>Services</b> page
+    {% endif %}
+    
+   
+</div>
+{% endblock %}
