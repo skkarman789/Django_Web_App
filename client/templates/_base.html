@@ -51,7 +51,7 @@
                 </ul>
             </div>
 
-            <div class="flex flex-row nav-links duration-500 md:static absolute items-center gap-2">
+            <div class="flex flex-wrap nav-links duration-500 md:static absolute items-center gap-2">
                 {% if user.is_authenticated %}
                 <h1 class="mr-4 text-teal-300"><b>{{user.first_name}}</b></h1>
                 <a href="{% url 'signout' %}"
