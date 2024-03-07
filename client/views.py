@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models  import UserTask
 from django.utils import timezone
+from django.contrib.sessions.models import Session
 from django.shortcuts import get_object_or_404
 
 def home(request):
@@ -49,6 +50,7 @@ def signup(request):
 
 @login_required
 def signout(request):
+    Session.objects.filter(users__id=request.user.id).delete()
     logout(request)
     error_msg="logout Sucessful"
     messages.success(request,(error_msg))
