@@ -21,8 +21,8 @@
 </head>
 
 <body class="font-[Poppins] bg-slate-800 h-screen">
-    <header class="bg-sky-950">
-        <nav class="flex item-center justify-between px-3 h-12 lg:gap-8 gap-6">
+    <header class="bg-sky-950 w-screen">
+        <nav class="flex item-center justify-between px-3 h-12 w-screen lg:gap-8 gap-6">
             <a href="">
                 <div class="flex items-center">
                     {% load static %}
@@ -52,7 +52,7 @@
                     </li>
 
                 </ul>
-                <div class="flex flex-col justify-between items-center gap-3 lg:flex-row ml-12">
+                <div class="flex flex-col justify-between items-center gap-3 lg:flex-row lg:ml-12">
                     {% if user.is_authenticated %}
                     {% if user.first_name == "" %}
                     <h1 class="mr-4 text-teal-300 whitespace-nowrap"><b>Admin</b></h1>
