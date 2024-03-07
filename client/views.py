@@ -74,7 +74,7 @@ def UserTasks(request):
             return redirect('UserTasks')
     else:
         form = UserTaskForm()
-    data=UserTask.objects.filter(user=request.user).order_by("-created_date")
+    data=UserTask.objects.filter(user=request.user).order_by("-created_date")[:5]
     return render(request, "daily_task.html", {'form': form ,'data':data ,'Status':Status })
 
 
