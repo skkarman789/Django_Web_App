@@ -1,8 +1,6 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from .forms import UserForm,UserTaskForm
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models  import UserTask
@@ -74,10 +72,21 @@ def UserTasks(request):
             return redirect('UserTasks')
     else:
         form = UserTaskForm()
-    data=UserTask.objects.filter(user=request.user).order_by("-created_date")[:5]
+    data=UserTask.objects.filter(user=request.user).order_by("-created_date")[:10]
     return render(request, "daily_task.html", {'form': form ,'data':data ,'Status':Status })
 
+@login_required
+def datefilter(request):
+    if request.method == "POST":
+        date = request.POST.get('date')
+        data = UserTask.objects.filter(date=date,user=request.user)
+        if not data:
+            messages.success(request,("No Tasks Available This Date"))
+        return render(request, "daily_task.html", {'data': data})
+    else:
+        return messages.success(request,"Date input field is empty")
 
+     
 @login_required
 def Update(request, pk):
     instance = get_object_or_404(UserTask,id=pk)
