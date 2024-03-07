@@ -58,22 +58,22 @@
                 <form action="{% url 'datefilter' %}" method="post">
                     {% csrf_token %}
                     <input type="date" class="rounded-lg p-1 bg-[#334155] text-center" id="dateInput" name="date" required>
-                    <button type="submit" class="p-1 ml-2 bg-teal-800 rounded text-white whitespace-nowrap   hover:bg-cyan-600">Submit
-                    </button>
+                    <div class="text-center sm:text-center"><button type="submit" class="p-1 ml-1 bg-teal-800 rounded text-white whitespace-nowrap  mt-2 hover:bg-cyan-600">Submit
+                    </button></div>
                 </form>
             </div>
 
             <h2 class=" text-2xl font-bold mb-2 m-3 mr-4 text-center text-teal-300">Latest User Tasks</h2>
             <div
-                class="grid grid-flow-row auto-rows-max md:grid-cols-4 lg:grid-rows-3 lg:grid-cols-5 lg:grid-rows-2  justify-start ml-2">
+                class="grid grid-rows-2  md:grid-cols-4 lg:grid-rows-auto lg:grid-cols-5 lg:grid-rows-2   ml-2">
                 {% for task in data %}
                 <div class="bg-white  rounded-lg mt-2 bg-zinc-700 p-2 mr-2  w-3/8  ">
 
                     <h3 class="text-lg font-semibold mb-1">{{ task.title|slice:"0:10" }}</h3>
-                    <p class="text-slate-200 mb-2">{{ task.description|slice:"0:10"}}</p>
-                    <!-- <p class="text-slate-200 mb-2">{{ task.description}}</p> -->
-                    <p class="text-sm text-gray-500  ">Date : {{ task.date }}</p>
-                    <p class="text-sm text-gray-500 ">Status : {{ task.status }}</p>
+                    <p class="text-slate-200 whitespace-normal mb-2">{{ task.description|slice:"0:10"}}</p>
+
+                    <p class="text-sm text-gray-500 whitespace-normal ">Date : {{ task.date }}</p>
+                    <p class="text-sm text-gray-500 whitespace-normal ">Status : <br>{{ task.status }}</p>
                     <div class="flex flex-rows gap-2 mt-1 justify-end">{% load static %}
                         <a href="{% url 'update' task.id %}"><img class="h-6  cursor-pointer "
                                 src="{% static 'client/edit.png' %}" alt="..."></a>
@@ -83,8 +83,9 @@
                     </div>
                 </div>
                 {% endfor %}
+                
             </div>
-
+            <div class="h-2"></div>
         </div>
     </div>
     <script>

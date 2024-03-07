@@ -1,9 +1,9 @@
 {% extends "_base.html" %}
 {% block content %}
-<body class="bg-slate-800 py-10 px-4 ">
+<body class="bg-slate-800 w-auto ">
 
-    
-    <form method="post" class="max-w-md border rounded-none border-green-50 mx-auto bg-slate-800 p-6 rounded-lg shadow-md mt-10">
+    <div>
+    <form method="post" class="max-w-md border rounded-none border-green-50 mx-auto bg-slate-800 p-6 rounded-lg shadow-md mt-10 ">
       {% csrf_token %}
       
       <h1 class="text-center  text-2xl font-bold ">Login</h1>    
@@ -33,6 +33,7 @@
     {% endif %}
     </div>
   </form>
+</div>
   </body>
 
 {% endblock %}
