@@ -49,22 +49,11 @@ def signup(request):
     return render(request, "signup.html", {'form': form})
 
 @login_required
-# def signout(request):
-#     Session.objects.filter(users__id=request.user.id).delete()
-#     logout(request)
-#     error_msg="logout Sucessful"
-#     messages.success(request,(error_msg))
-#     return redirect('login_view')
 def signout(request):
-    try:
-        del request.session['user']
-        logout(request)
-        error_msg="logout Sucessful"
-        messages.success(request,(error_msg))
-    except:
-        logout(request)
-        return redirect('login_view')
-    
+    Session.objects.filter(users__id=request.user.id).delete()
+    logout(request)
+    error_msg="logout Sucessful"
+    messages.success(request,(error_msg))
     return redirect('login_view')
 
 @login_required
