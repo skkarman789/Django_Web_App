@@ -50,7 +50,6 @@ def signup(request):
 
 @login_required
 def signout(request):
-    Session.objects.filter(users__id=request.user.id).delete()
     logout(request)
     error_msg="logout Sucessful"
     messages.success(request,(error_msg))
