@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,HttpResponse
 from .forms import UserForm,UserTaskForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -7,6 +7,8 @@ from .models  import UserTask
 from django.utils import timezone
 from django.contrib.sessions.models import Session
 from django.shortcuts import get_object_or_404
+from datetime import date
+from django.core.mail import EmailMessage
 
 def home(request):
     if request.user.is_authenticated:
@@ -24,7 +26,11 @@ def login_view(request):
             user = authenticate(username=email, password=password)
             if user is not None:
                 login(request, user)
+                data=UserTask.objects.filter(date=date.today(),user=request.user).count()
+                
                 messages.success(request, "Login successful.")
+                if data is not 0:
+                    messages.success(request, "You have {} tasks today.".format(data))
                 return redirect('home')
             else:
                 messages.error(request, "Invalid email or password.")
@@ -57,24 +63,29 @@ def signout(request):
 
 @login_required
 def UserTasks(request):
-    Status=""
-    if request.method =='POST':
-        form = UserTaskForm(request.POST)
-        if form.is_valid():
-            instance=form.save(commit=False)
-            if instance.status==True:
-                Status="Completed"
-            else:
-                Status="Pending"
-            instance.user=request.user
-            instance.save()
-            error_msg="Task Added Sucessfully"
-            messages.success(request,(error_msg))
-            return redirect('UserTasks')
+    if not request.user.is_superuser:
+        Status=""
+        if request.method =='POST':
+            form = UserTaskForm(request.POST)
+            if form.is_valid():
+                instance=form.save(commit=False)
+                if instance.status==True:
+                    Status="Completed"
+                else:
+                    Status="Pending"
+                instance.user=request.user
+                instance.save()
+                error_msg="Task Added Sucessfully"
+                messages.success(request,(error_msg))
+                return redirect('UserTasks')
+        else:
+            form = UserTaskForm()
+        data=UserTask.objects.filter(user=request.user).order_by("-created_date")[:10]
+        
+        return render(request, "daily_task.html", {'form': form ,'data':data ,'Status':Status })
     else:
-        form = UserTaskForm()
-    data=UserTask.objects.filter(user=request.user).order_by("-created_date")[:10]
-    return render(request, "daily_task.html", {'form': form ,'data':data ,'Status':Status })
+        data = UserTask.objects.filter(date=date.today()).all()
+        return render(request, "daily_task.html",{'data':data})
 
 @login_required
 def datefilter(request):
@@ -113,7 +124,6 @@ def Update(request, pk):
 def Delete(request, pk):
     instance = get_object_or_404(UserTask, id=pk)
     instance.delete()
-    print(instance)
     messages.success(request, "Task deleted successfully.")
     return redirect('UserTasks')
           
@@ -158,4 +168,37 @@ def scholarships(request):
         messages.error(request,(error_msg))
     return redirect('login_view')
 
+def remaindersender(request):
+    data = UserTask.objects.filter(date=date.today()).all()
+    email=[]
+    phone=[]
+    for i in data:
+        if i.user.email is not None:
+            email.append(i.user.email)
+        if i.user.phone is not None:
+            phone.append(i.user.phone)
+    if request.method=="POST":
+        msg = """
+        <html>
+        <body>
+            <p>Hi User,</p>
+            <p>I hope this message finds you well.</p>
+            <p>This is just a friendly reminder that you have some tasks to complete today.</p>
+            <p>It's always helpful to stay organized and ensure everything gets done on time.</p>
+            <p>Please take a moment to review your task list for today and prioritize them accordingly.</p>
+            <p>Remember, tackling tasks one at a time can help reduce stress and increase productivity.</p>
+            <p>If you have any questions or need assistance with anything, feel free to reach out.</p>
+            <p>I'm here to help!</p>
+            <p>Best regards,<br>Orizzonte</p>
+        </body>
+        </html>
+        """  
+        email = EmailMessage('Reminder: Tasks to Complete Today', msg ,"arman.arbaz111@gmail.com",email)
+        email.content_subtype = "html"
+        email.send()
+        error_msg="Email Sent"
+        messages.error(request,(error_msg))
+        return redirect('UserTasks')
+         
+    return redirect('UserTasks')
 

@@ -7,19 +7,19 @@ class CustomUsertask(admin.ModelAdmin):
 
 class CustomUserAdmin(UserAdmin):
     model = UserProfile
-    list_display = ("email", "is_staff", "is_active",)
-    list_filter = ("email", "is_staff", "is_active",)
+    list_display = ("email", "is_staff", "is_active",'is_superuser')
+    list_filter = ("email", "is_staff", "is_active",'is_superuser')
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         ("Personal Info", {"fields": ("first_name", "last_name", "phone", "date_of_birth", "picture")}),
-        ("Permissions", {"fields": ("is_staff", "is_active", "groups", "user_permissions")}),
+        ("Permissions", {"fields": ("is_staff",'is_superuser', "is_active", "groups", "user_permissions")}),
     )  
     add_fieldsets = (
         (None, {
             "classes": ("collapse",),
             "fields": (
                 "email", "password1", "password2", "is_staff",
-                "is_active", "groups", "user_permissions"
+                "is_active",'is_superuser', "groups", "user_permissions"
             )}
         ),
     )

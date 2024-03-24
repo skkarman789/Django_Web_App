@@ -2,6 +2,7 @@
 {% block content %}
 
 <body class="bg-slate-800 w-screen">
+    {% if not user.is_superuser %}
     <div class="flex flex-rows ">
         <div class=" w-2/5 m-2 mt-4">
             <div class=" mt-3 content-start">
@@ -98,6 +99,38 @@
             return true;
         }
     </script>
+    {%else%}
+    <div class="flex justify-center mt-4">
+        <div class="size-5/6 ">
+            <div class="border border-teal h-12 grid  grid-cols-8">
+                <div class="col-span-6 text-center m-auto text-lg font-bold">
+                        Todays Tasks Of All Users
+                </div>
+                <div class="col-span-2 text-center m-auto">
+
+               
+                    <form method="POST" action="{% url 'remaindersender' %}">
+                        {% csrf_token %}
+                        <button type="submit" class=" h-8 px-4  text-lg bg-teal-800 text-white whitespace-nowrap rounded-lg hover:bg-cyan-600">Send Remainders
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="border border-black mt-2 grid grid-cols-8">
+                {% for i in data %}
+                 <div class="border border-teal m-2 col-span-6">
+                {{ i.user.email }}
+                </div>
+                <div class="border border-teal m-2 col-span-2 text-center justify-center">
+                   {{i.status}}
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
 
 </body>
 
